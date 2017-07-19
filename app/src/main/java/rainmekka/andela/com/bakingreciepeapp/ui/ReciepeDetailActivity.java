@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+
+import java.util.ArrayList;
 
 import rainmekka.andela.com.bakingreciepeapp.R;
 import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
+import rainmekka.andela.com.bakingreciepeapp.data.Step;
 
 /**
  * An activity representing a single Reciepe detail screen. This
@@ -22,6 +25,7 @@ import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
  */
 public class ReciepeDetailActivity extends AppCompatActivity {
     private Reciepe mReciepeItem;
+    public ArrayList<Step> steps= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,9 @@ public class ReciepeDetailActivity extends AppCompatActivity {
             Bundle b = getIntent().getExtras();
 
             if (b!=null){
-                mReciepeItem = b.getParcelable(ReciepeDetailFragment.RECIEPE_ITEM);
+                //
+               // mReciepeItem = b.getParcelable(ReciepeDetailFragment.RECIEPE_ITEM);
+                steps = b.getParcelableArrayList("steps");
             }else{
                 //do somethine else here
             }
@@ -69,7 +75,8 @@ public class ReciepeDetailActivity extends AppCompatActivity {
             //fragment.setArguments(arguments);
 
             //Reciepe mItem = getIntent().getExtra(ReciepeDetailFragment.ARG_ITEM_ID);
-            fragment.setReciepeObject(mReciepeItem);
+            //passing the steps
+            fragment.setReciepeObject(steps);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.reciepe_detail_container, fragment)
                     .commit();
