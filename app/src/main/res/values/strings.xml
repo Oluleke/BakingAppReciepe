@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BakingReciepeApp</string>
+    <string name="title_reciepe_detail">Reciepe Steps</string>
+    <string name="reciepe_url">http://go.udacity.com/android-baking-app-json</string>
+    <string name="base_url">http://go.udacity.com/</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="title_reciepestep_list">ReciepeSteps</string>
+    <string name="title_reciepestep_detail">ReciepeStep Detail</string>
+    <string name="no_connection_message">Internet Connection required</string>
+</resources>
