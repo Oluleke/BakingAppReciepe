@@ -5,6 +5,7 @@ package rainmekka.andela.com.bakingreciepeapp.data;
  */
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,19 +19,23 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import rainmekka.andela.com.bakingreciepeapp.R;
+import rainmekka.andela.com.bakingreciepeapp.ui.ReciepeDetailActivity;
+import rainmekka.andela.com.bakingreciepeapp.ui.StepDetailFragment;
 
 
 public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHolder> {
-    private ArrayList<Reciepe> mReciepes;
+    private Reciepe mReciepes;
     private ArrayList<Step> mSteps;
     private Context mContext;
 
-    public StepListAdapter(ArrayList<Reciepe> reciepes, Context context) {
+    public StepListAdapter(Reciepe reciepes, Context context) {
+
         this.mReciepes = reciepes;
         this.mContext = context;
+        this.mSteps = this.mReciepes.steps;
     }
-    public StepListAdapter(Reciepe reciepes, Context context) {
-        this.mSteps = reciepes.steps;
+    public StepListAdapter(ArrayList<Step> steps, Context context) {
+        this.mSteps = steps;
         this.mContext = context;
     }
 
@@ -44,7 +49,7 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
     @Override
     public void onBindViewHolder(StepListAdapter.ViewHolder viewHolder, int i) {
 
-        viewHolder.txt_step_details.setText(mSteps.get(i).shortDescription);
+        viewHolder.txt_step_details.setText(mSteps.get(i).videoURL);
         if (!mSteps.get(i).thumbnailURL.equals("")){
             //useGlide to set Image Resource
             String imgUrlString =  mSteps.get(i).thumbnailURL;
@@ -60,21 +65,18 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
         viewHolder.txt_step_details.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                //ReciepeStepsFragment reciepeStepsFragment = new ReciepeStepsFragment();
+                StepDetailFragment stepDetailFragment = new StepDetailFragment();
+                stepDetailFragment.setReciepeStepList(mSteps);
 
-                Toast toast = Toast.makeText(mContext,"You Clicked : "+ mSteps.get(index).
-                        shortDescription,Toast.LENGTH_LONG);
-                toast.show();
+                stepDetailFragment.setReciepeStepList(mSteps);
+                stepDetailFragment.setReciepeStepListIndex(index);
 
-//                reciepeStepsFragment.setRecipeObject(mReciepes.get(index));
-//
-//                FragmentManager mainactivity_fm = ((MainActivity) mContext).getSupportFragmentManager();
+                FragmentManager activity_fm = ((ReciepeDetailActivity)mContext).getSupportFragmentManager();
 
-//                mainactivity_fm.beginTransaction()
-//                        .add(R.id.reciepe_list_fragment, reciepeStepsFragment)
-//                        .addToBackStack("reciepeStepsFragment")
-//                        .commit();
-
+                activity_fm.beginTransaction()
+                        .replace(R.id.reciepe_detail_container, stepDetailFragment)
+                        .addToBackStack("stepDetailsFragment")
+                        .commit();
             }
         });
 
@@ -84,7 +86,6 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
     public int getItemCount() {
         return mSteps.size();
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView txt_step_details;
         private ImageView img_stepImg;

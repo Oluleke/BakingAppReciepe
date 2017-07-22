@@ -3,21 +3,23 @@ package rainmekka.andela.com.bakingreciepeapp.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import rainmekka.andela.com.bakingreciepeapp.R;
-import rainmekka.andela.com.bakingreciepeapp.data.DummyContent;
 import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
+import rainmekka.andela.com.bakingreciepeapp.data.Step;
 import rainmekka.andela.com.bakingreciepeapp.data.StepListAdapter;
 
 /**
@@ -34,12 +36,14 @@ public class ReciepeDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     public static final String RECIEPE_ITEM = "reciepe_item";
     public static final String STEP_LIST = "step_list_item";
+    public static final String TAG = "RecipeDetailFragment";
 
 
     /**
      * The dummy content this fragment is presenting.
      */
     private Reciepe mItem;
+    public ArrayList<Step> steps= new ArrayList<>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -61,10 +65,10 @@ public class ReciepeDetailFragment extends Fragment {
             //mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.name);
-            }
+//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+//            if (appBarLayout != null) {
+//                appBarLayout.setTitle(mItem.name);
+//            }
         }
     }
 
@@ -86,16 +90,16 @@ public class ReciepeDetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-//                    Context context = v.getContext();
-//                        Intent intent = new Intent(context, ReciepeIngredientsActivity.class);
-//
-//                        Bundle b = new Bundle();
-//                        b.putParcelable(ReciepeDetailFragment.STEP_LIST, mItem);
-//
-//                        intent.putExtras(b);
-//                        context.startActivity(intent);
-                    Toast.makeText(getContext(),"I was clicked"+Integer.toString(mItem.steps.size())
-                    ,Toast.LENGTH_SHORT).show();
+                    Context context = v.getContext();
+                        Intent intent = new Intent(context, ReciepeIngredientsActivity.class);
+
+                        Bundle b = new Bundle();
+                        b.putParcelable(ReciepeDetailFragment.STEP_LIST, mItem);
+
+                        intent.putExtras(b);
+                        context.startActivity(intent);
+//                    Toast.makeText(getContext(),"I was clicked"+Integer.toString(steps.size())
+//                    ,Toast.LENGTH_SHORT).show();
                     //Display Steps Detail
                 }
             });
@@ -105,11 +109,14 @@ public class ReciepeDetailFragment extends Fragment {
                     (R.id.step_list_recyclerview);
 
             //recyclerView.setLayoutManager();
+            //populating the steps
             StepListAdapter adapter = new StepListAdapter(mItem,getContext());
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
-            recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(llm);
             recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+
+
             return rootView;
 
         }
@@ -118,5 +125,7 @@ public class ReciepeDetailFragment extends Fragment {
     }
     public void setReciepeObject(Reciepe reciepe){
         mItem = reciepe;
+        //steps = step;
+        Log.e(TAG, "Number of recipe steps: " + steps.size());
     }
 }

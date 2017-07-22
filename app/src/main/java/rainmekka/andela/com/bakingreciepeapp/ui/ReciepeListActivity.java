@@ -2,21 +2,30 @@ package rainmekka.andela.com.bakingreciepeapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rainmekka.andela.com.bakingreciepeapp.R;
 import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
@@ -26,9 +35,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An activity representing a list of Reciepes. This activity
@@ -68,14 +74,14 @@ public class ReciepeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         //getdata from connection
         //loadJSON();
@@ -94,6 +100,7 @@ public class ReciepeListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
     }
+
     public boolean getIsConnected() {
 
         ConnectivityManager cm =
@@ -120,11 +127,6 @@ public class ReciepeListActivity extends AppCompatActivity {
             public void onResponse(Call<List<Reciepe>> call, Response<List<Reciepe>> response) {
                 List <Reciepe> jsonResponse = response.body();
                 data = new ArrayList<>(jsonResponse);
-
-
-                //adapter = new DataAdapter(data,getBaseContext());
-                //recyclerView.setAdapter(adapter);
-                //recyclerView.setAdapter(adapter);
                 recyclerView1.setAdapter(new SimpleItemRecyclerViewAdapter(data));
             }
             @Override
@@ -133,11 +135,6 @@ public class ReciepeListActivity extends AppCompatActivity {
             }
 
         });
-    }
-
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        //loadJSON();
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(data));
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -160,8 +157,11 @@ public class ReciepeListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
 
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).getId());
+            //holder.mIdView.setText(mValues.get(position).getId());
             holder.mContentView.setText(mValues.get(position).getName());
+
+            //Get current recipe
+            final Reciepe reciepe = mValues.get(position);
 
 
 
@@ -173,7 +173,7 @@ public class ReciepeListActivity extends AppCompatActivity {
                         arguments.putString(ReciepeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
 
                         ReciepeDetailFragment fragment = new ReciepeDetailFragment();
-                        fragment.setReciepeObject(holder.mItem);
+                        fragment.setReciepeObject(reciepe);
 
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -182,12 +182,14 @@ public class ReciepeListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, ReciepeDetailActivity.class);
-
+                        //Getting and passing all the steps associated with the recipe
+                       /* intent.putParcelableArrayListExtra("steps", reciepe.getSteps());
+                        // Commented out your code below*/
                         Bundle b = new Bundle();
+
                         b.putParcelable(ReciepeDetailFragment.RECIEPE_ITEM, holder.mItem);
 
                         intent.putExtras(b);
-                        //intent.putParecable()
 
                         context.startActivity(intent);
                     }
@@ -202,14 +204,14 @@ public class ReciepeListActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
+            //public final TextView mIdView;
             public final TextView mContentView;
             public Reciepe mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
+                //mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
 

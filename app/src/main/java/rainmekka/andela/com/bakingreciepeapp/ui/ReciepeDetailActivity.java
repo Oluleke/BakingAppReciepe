@@ -1,18 +1,34 @@
 package rainmekka.andela.com.bakingreciepeapp.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rainmekka.andela.com.bakingreciepeapp.R;
 import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
+import rainmekka.andela.com.bakingreciepeapp.data.Step;
 
 /**
  * An activity representing a single Reciepe detail screen. This
@@ -22,22 +38,15 @@ import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
  */
 public class ReciepeDetailActivity extends AppCompatActivity {
     private Reciepe mReciepeItem;
+    public ArrayList<Step> steps= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciepe_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+//        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -60,18 +69,19 @@ public class ReciepeDetailActivity extends AppCompatActivity {
             Bundle b = getIntent().getExtras();
 
             if (b!=null){
-                mReciepeItem = b.getParcelable(ReciepeDetailFragment.RECIEPE_ITEM);
+                //
+               mReciepeItem = b.getParcelable(ReciepeDetailFragment.RECIEPE_ITEM);
+                //steps = b.getParcelableArrayList("steps");
             }else{
                 //do somethine else here
             }
 
             ReciepeDetailFragment fragment = new ReciepeDetailFragment();
-            //fragment.setArguments(arguments);
 
-            //Reciepe mItem = getIntent().getExtra(ReciepeDetailFragment.ARG_ITEM_ID);
             fragment.setReciepeObject(mReciepeItem);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.reciepe_detail_container, fragment)
+                    .addToBackStack("reciepe_Detail_container")
                     .commit();
         }
     }
@@ -87,12 +97,102 @@ public class ReciepeDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, ReciepeListActivity.class));
+
+            //getSupportFragmentManager().getBackStackEntryCount()
+//            LinearLayout linearLayout = (LinearLayout)findViewById(R.id.reciepe_detail_container);
+//            LinearLayout fragment_step_details_container = (LinearLayout)findViewById(R.id.fragment_step_details_container);
+//
+//            Intent intent;
+//
+//            if (linearLayout!= null){
+//                //load 1st page
+//                intent = new Intent(this,ReciepeListActivity.class);
+//                NavUtils.navigateUpTo(this, intent);
+//
+//            }else if(fragment_step_details_container != null){
+//                //load list of steps
+//                Bundle b = new Bundle();
+//                intent = new Intent(this,ReciepeDetailActivity.class);
+//                b.putParcelable(ReciepeDetailFragment.RECIEPE_ITEM, mReciepeItem);
+//                this.startActivity(intent);
+//            }
+
+            //ToDo: handle navigation from Step Detail to Step list or from Step detail to Main list
+            Intent intent = new Intent(this,ReciepeListActivity.class);
+            NavUtils.navigateUpTo(this, intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    public void setReciepeObject(Reciepe reciepe){
-        mReciepeItem = reciepe;
+        @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
+        @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        SimpleExoPlayerView playerView = (SimpleExoPlayerView) findViewById(R.id.video_view);
+        TextView txtStepDetails = (TextView) findViewById(R.id.txt_step_details);
+        Button btn_stepnext = (Button) findViewById(R.id.btn_next_step);
+        LinearLayout ly = (LinearLayout)findViewById(R.id.fragment_step_details_container);
+            ArrayList<Fragment> dummy ;
+            dummy = new ArrayList<>(getSupportFragmentManager().getFragments());
+
+            StepDetailFragment stepdetfrag = (StepDetailFragment)dummy.get(1);
+
+            FullScreenVideoFragment fullScreenVideoFragment = new FullScreenVideoFragment();
+            int curIndex = stepdetfrag.mReciepeStepClassListIndex -1;
+            curIndex = (curIndex>0?curIndex:0);
+
+            Step stepItem = stepdetfrag.mStepList.get(curIndex);
+            fullScreenVideoFragment.setStepItem(stepItem);
+            fullScreenVideoFragment.setVideoURL(stepItem.videoURL);
+            fullScreenVideoFragment.setVideoPlayer(stepdetfrag.getPlayer());
+            SharedPreferences sharedpref2;
+
+            // Checks the orientation of the screen
+
+        if ((newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+            if (playerView != null && txtStepDetails != null && ly!=null) {
+
+                sharedpref2 = getBaseContext().
+                        getSharedPreferences(getString(R.string.full_video_url),MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpref2.edit();
+                editor.putString(getString(R.string.full_video_url),stepItem.videoURL);
+                editor.commit();
+
+                FragmentManager activity_fm = getSupportFragmentManager();
+
+                activity_fm.beginTransaction()
+                        .replace(R.id.reciepe_detail_container, fullScreenVideoFragment)
+                        .addToBackStack("fullScreenVideoFragment")
+                        .commit();
+
+            }
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && ly!=null) {
+
+            if (playerView != null && txtStepDetails != null) {
+                //reload fragment_step_details with current step
+
+
+                FragmentManager activity_fm = getSupportFragmentManager();
+
+                //StepDetailFragment stepdetfrag = (StepDetailFragment)dummy.get(1);
+                activity_fm.beginTransaction()
+                        .replace(R.id.reciepe_detail_container, stepdetfrag)
+                        .addToBackStack("fullScreenVideoFragment")
+                        .commit();
+                //playerView.setMinimumHeight(200);
+            }
+        }
+        else{
+            //do nothing
+        }
+    }
+
 }

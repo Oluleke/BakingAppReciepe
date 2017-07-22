@@ -21,6 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+       <activity
+        android:name=".ui.NoConnectionActivity"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme.NoActionBar">
+    </activity>
+        <activity
+            android:name=".ui.ReciepeIngredientsActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".ui.ReciepeDetailActivity"
             android:label="@string/title_reciepe_detail"

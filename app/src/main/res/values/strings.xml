@@ -5,7 +5,11 @@
     <string name="base_url">http://go.udacity.com/</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
+    <string name="full_video_url">full_video_url</string>
     <string name="title_reciepestep_list">ReciepeSteps</string>
     <string name="title_reciepestep_detail">ReciepeStep Detail</string>
     <string name="no_connection_message">Internet Connection required</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
