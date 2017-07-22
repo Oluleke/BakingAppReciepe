@@ -56,35 +56,28 @@ public class ReciepeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (mItem!=null) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
+        if (savedInstanceState!=null){
 
-            //Already passed in through setreciepeObject
-            //mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = savedInstanceState.getParcelable(STEP_LIST);
 
-            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//            if (appBarLayout != null) {
-//                appBarLayout.setTitle(mItem.name);
-//            }
+           // mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
+
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.reciepe_detail, container, false);
-
         // Show the dummy content as text in a TextView.
-        if (mItem != null) {
+
+        if (mItem != null ) {
             //((TextView) rootView.findViewById(R.id.reciepe_detail)).setText(mItem.name);
             Button btn_showIngredients = (Button) rootView.findViewById(R.id.btn_showIngredients);
 
             btn_showIngredients.setText("Ingredients");
-
-            //btn_showIngredients.setOnClickListener();
 
             btn_showIngredients.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,17 +91,10 @@ public class ReciepeDetailFragment extends Fragment {
 
                         intent.putExtras(b);
                         context.startActivity(intent);
-//                    Toast.makeText(getContext(),"I was clicked"+Integer.toString(steps.size())
-//                    ,Toast.LENGTH_SHORT).show();
-                    //Display Steps Detail
                 }
             });
-            //setup recyclerview
-
             RecyclerView recyclerView = (RecyclerView)rootView.findViewById
                     (R.id.step_list_recyclerview);
-
-            //recyclerView.setLayoutManager();
             //populating the steps
             StepListAdapter adapter = new StepListAdapter(mItem,getContext());
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
@@ -125,7 +111,12 @@ public class ReciepeDetailFragment extends Fragment {
     }
     public void setReciepeObject(Reciepe reciepe){
         mItem = reciepe;
-        //steps = step;
         Log.e(TAG, "Number of recipe steps: " + steps.size());
     }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putParcelable(STEP_LIST,mItem);
+
+    }
+
 }

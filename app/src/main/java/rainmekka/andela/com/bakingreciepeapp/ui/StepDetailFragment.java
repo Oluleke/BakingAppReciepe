@@ -2,14 +2,18 @@ package rainmekka.andela.com.bakingreciepeapp.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -47,6 +51,8 @@ public class StepDetailFragment extends Fragment {
     long playbackPosition;
     String videoUrl;
     View rootView;
+    boolean isPortrait;
+    final String STEP_LIST = "step_list";
 
     boolean isVideoAvailable = false;
 
@@ -56,68 +62,75 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //mContext = (MainActivity)getContext();
-
         rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
-
-
         TextView txtStepDetails = (TextView) rootView.findViewById(R.id.txt_step_details);
+        Button btn_nextstep = (Button) rootView.findViewById(R.id.btn_next_step);
+        playerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
 
+        int curOrientation = getResources().getConfiguration().orientation;
+        //int curOrientation;
+        if (curOrientation == Configuration.ORIENTATION_PORTRAIT){
+            isPortrait = true;
+        }else{
+            isPortrait = false;
+        }
+
+        if (savedInstanceState != null){
+            mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
+            if (!isPortrait){
+                txtStepDetails.setVisibility(View.INVISIBLE);
+                btn_nextstep.setVisibility(View.INVISIBLE);
+                //ToDo: Maximise playerView Here
+            }else{
+                txtStepDetails.setVisibility(View.VISIBLE);
+                btn_nextstep.setVisibility(View.VISIBLE);
+            }
+        }else{
+            txtStepDetails.setVisibility(View.VISIBLE);
+            btn_nextstep.setVisibility(View.VISIBLE);
+            if (mReciepeStepClassListIndex + 1 < mStepList.size()) {
+                mReciepeStepClassListIndex += 1;
+            } else {
+                mReciepeStepClassListIndex = 0;
+            }
+        }
+
+        int nextstep = mReciepeStepClassListIndex +1;
+        String btn_text_details = "Go to Step " + nextstep;
+            //ToDo: load video into mediacontroller
+
+            if (!mStepList.get(mReciepeStepClassListIndex).videoURL.isEmpty()) {
+                isVideoAvailable = true;
+                //initializePlayer();
+            } else {
+                //ToDO -- Display Image if available or text Showing Video is not available
+            }
         txtStepDetails.setText(mStepList.get(mReciepeStepClassListIndex).description);
 
-        //txtStepDetails.setText(mRecipeStep.description);
+        btn_nextstep.setText(btn_text_details);
+            btn_nextstep.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
 
-        Button btn_nextstep = (Button)rootView.findViewById(R.id.btn_next_step);
+                    StepDetailFragment stepDetailsFragment_new = new StepDetailFragment();
 
-        int nextstep  = mReciepeStepClassListIndex+1;
+                    stepDetailsFragment_new.setReciepeStepList(mStepList);
+                    stepDetailsFragment_new.setReciepeStepListIndex(mReciepeStepClassListIndex);
 
-        String btntext = "Step " + nextstep;
+                    FragmentManager activity_fm = ((ReciepeDetailActivity) getContext()).getSupportFragmentManager();
 
-        btn_nextstep.setText(btntext);
-
-        //ToDo: load video into mediacontroller
-
-        if ( !mStepList.get(mReciepeStepClassListIndex).videoURL.isEmpty()){
-            isVideoAvailable = true;
-            playerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
-            //initializePlayer();
-        }else{
-            //ToDO -- Display Image if available or text Showing Video is not available
-        }
-
-
-
-        //if index is last on list go back to index 0
-        if (mReciepeStepClassListIndex+1 < mStepList.size()){
-
-            //load new fragment in detail fragment
-            mReciepeStepClassListIndex+=1;
-
-
-        }else{
-            mReciepeStepClassListIndex = 0;
-        }
-
-        btn_nextstep.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                StepDetailFragment stepDetailsFragment_new = new StepDetailFragment();
-
-                stepDetailsFragment_new.setReciepeStepList(mStepList);
-                stepDetailsFragment_new.setReciepeStepListIndex(mReciepeStepClassListIndex);
-
-                FragmentManager activity_fm = ((ReciepeDetailActivity)getContext()).getSupportFragmentManager();
-
-                activity_fm.beginTransaction()
-                        .replace(R.id.reciepe_detail_container, stepDetailsFragment_new)
-                        .addToBackStack("stepDetailsFragment")
-                        .commit();
-            }
-        });
+                    activity_fm.beginTransaction()
+                            .replace(R.id.reciepe_detail_container, stepDetailsFragment_new)
+                            .addToBackStack("stepDetailsFragment")
+                            .commit();
+                }
+            });
 
         return rootView;
 
     }
+
+
 
     public void setReciepeStepList(ArrayList<Step> stepList) {
         mStepList = stepList;
@@ -158,7 +171,7 @@ public class StepDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(isVideoAvailable){
-            hideSystemUi();
+            //hideSystemUi();
             if ((Util.SDK_INT <= 23 || player == null)) {
                 initializePlayer();
             }
@@ -215,44 +228,20 @@ public class StepDetailFragment extends Fragment {
     public SimpleExoPlayer getPlayer(){
         return  player ;
     }
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//
-//        // Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            //Toast.makeText("landscape", Toast.LENGTH_SHORT).show();
-//
-//
-//
-//
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            //Toast.makeText("portrait", Toast.LENGTH_SHORT).show();
-//        }
 
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        //Load Previous fragment
-//
-//        ReciepeDetailsFragment reciepeDetailsFragment = new ReciepeDetailsFragment();
-//
-//        reciepeDetailsFragment.setRecipeClassObject(mRecipeClass);
-//
-//        FragmentManager mainactivity_fm = ((MainActivity)mContext).getSupportFragmentManager();
-//
-//        Bundle b = new Bundle();
-//
-//        b.putParcelable("reciepe_item",mRecipeClass);
-//
-//        reciepeDetailsFragment.setArguments(b);
-//
-//        mainactivity_fm.beginTransaction()
-//                .replace(R.id.reciepe_list_fragment, reciepeDetailsFragment)
-//                .commit();
-//
-//
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        //
+
+        //mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+
+        //mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
+
+        savedInstanceState.putParcelableArrayList(STEP_LIST, mStepList);
+        savedInstanceState.putInt("stepIndex", mReciepeStepClassListIndex);
+    }
+
 
 
 }
