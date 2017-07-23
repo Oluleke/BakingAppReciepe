@@ -44,6 +44,7 @@ public class ReciepeDetailFragment extends Fragment {
      */
     private Reciepe mItem;
     public ArrayList<Step> steps= new ArrayList<>();
+    boolean mTwoPaneMode;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,11 +58,7 @@ public class ReciepeDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState!=null){
-
             mItem = savedInstanceState.getParcelable(STEP_LIST);
-
-           // mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
-
         }
 
 
@@ -95,8 +92,10 @@ public class ReciepeDetailFragment extends Fragment {
             });
             RecyclerView recyclerView = (RecyclerView)rootView.findViewById
                     (R.id.step_list_recyclerview);
+
             //populating the steps
             StepListAdapter adapter = new StepListAdapter(mItem,getContext());
+            adapter.setTwoPaneMode(mTwoPaneMode);
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(llm);
             recyclerView.setHasFixedSize(true);
@@ -108,6 +107,10 @@ public class ReciepeDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    public void setTwoPaneMode(boolean twopanemode){
+        mTwoPaneMode = twopanemode;
     }
     public void setReciepeObject(Reciepe reciepe){
         mItem = reciepe;

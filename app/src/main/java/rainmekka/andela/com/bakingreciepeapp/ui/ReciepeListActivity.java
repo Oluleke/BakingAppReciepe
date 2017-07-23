@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -74,31 +75,15 @@ public class ReciepeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        //getdata from connection
-        //loadJSON();
-
-
+        if (findViewById(R.id.reciepe_list_container) != null) {
+            mTwoPane = true;
+        }
         recyclerView = findViewById(R.id.reciepe_list);
         assert recyclerView != null;
         //setupRecyclerView((RecyclerView) recyclerView);
         loadJSON((RecyclerView) recyclerView);
 
-        if (findViewById(R.id.reciepe_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
+
     }
 
     public boolean getIsConnected() {
@@ -115,6 +100,9 @@ public class ReciepeListActivity extends AppCompatActivity {
     }
     private void loadJSON(@NonNull RecyclerView recyclerView){
         final RecyclerView recyclerView1;
+        final RecyclerView.LayoutManager lm = new GridLayoutManager(this,3);
+
+
         recyclerView1 = recyclerView;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.base_url))
@@ -127,6 +115,12 @@ public class ReciepeListActivity extends AppCompatActivity {
             public void onResponse(Call<List<Reciepe>> call, Response<List<Reciepe>> response) {
                 List <Reciepe> jsonResponse = response.body();
                 data = new ArrayList<>(jsonResponse);
+
+                if(mTwoPane){
+                    //set to 3 columns
+                     recyclerView1.setLayoutManager(lm);
+                }
+
                 recyclerView1.setAdapter(new SimpleItemRecyclerViewAdapter(data));
             }
             @Override
@@ -157,42 +151,21 @@ public class ReciepeListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
 
             holder.mItem = mValues.get(position);
-            //holder.mIdView.setText(mValues.get(position).getId());
             holder.mContentView.setText(mValues.get(position).getName());
 
-            //Get current recipe
-            final Reciepe reciepe = mValues.get(position);
-
-
-
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+                    holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(ReciepeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, ReciepeDetailActivity.class);
+                    Bundle b = new Bundle();
 
-                        ReciepeDetailFragment fragment = new ReciepeDetailFragment();
-                        fragment.setReciepeObject(reciepe);
+                    b.putParcelable(ReciepeDetailFragment.RECIEPE_ITEM, holder.mItem);
 
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.reciepe_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ReciepeDetailActivity.class);
-                        //Getting and passing all the steps associated with the recipe
-                       /* intent.putParcelableArrayListExtra("steps", reciepe.getSteps());
-                        // Commented out your code below*/
-                        Bundle b = new Bundle();
+                    intent.putExtras(b);
 
-                        b.putParcelable(ReciepeDetailFragment.RECIEPE_ITEM, holder.mItem);
+                    context.startActivity(intent);
 
-                        intent.putExtras(b);
-
-                        context.startActivity(intent);
-                    }
                 }
             });
         }
@@ -219,6 +192,14 @@ public class ReciepeListActivity extends AppCompatActivity {
             public String toString() {
                 return super.toString() + " '" + mContentView.getText() + "'";
             }
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
         }
     }
 }

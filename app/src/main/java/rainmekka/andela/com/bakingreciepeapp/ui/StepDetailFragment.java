@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,6 +53,7 @@ public class StepDetailFragment extends Fragment {
     String videoUrl;
     View rootView;
     boolean isPortrait;
+    boolean mTwoPaneMode;
     final String STEP_LIST = "step_list";
 
     boolean isVideoAvailable = false;
@@ -67,6 +69,8 @@ public class StepDetailFragment extends Fragment {
         Button btn_nextstep = (Button) rootView.findViewById(R.id.btn_next_step);
         playerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
 
+        FrameLayout flayout = (FrameLayout) rootView.findViewById(R.id.frame_video_player);
+
         int curOrientation = getResources().getConfiguration().orientation;
         //int curOrientation;
         if (curOrientation == Configuration.ORIENTATION_PORTRAIT){
@@ -75,28 +79,9 @@ public class StepDetailFragment extends Fragment {
             isPortrait = false;
         }
 
-        if (savedInstanceState != null){
-            mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
-            mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
-            if (!isPortrait){
-                txtStepDetails.setVisibility(View.INVISIBLE);
-                btn_nextstep.setVisibility(View.INVISIBLE);
-                //ToDo: Maximise playerView Here
-            }else{
-                txtStepDetails.setVisibility(View.VISIBLE);
-                btn_nextstep.setVisibility(View.VISIBLE);
-            }
-        }else{
-            txtStepDetails.setVisibility(View.VISIBLE);
-            btn_nextstep.setVisibility(View.VISIBLE);
-            if (mReciepeStepClassListIndex + 1 < mStepList.size()) {
-                mReciepeStepClassListIndex += 1;
-            } else {
-                mReciepeStepClassListIndex = 0;
-            }
-        }
 
-        int nextstep = mReciepeStepClassListIndex +1;
+
+        int nextstep = mReciepeStepClassListIndex + 1;
         String btn_text_details = "Go to Step " + nextstep;
             //ToDo: load video into mediacontroller
 
@@ -117,14 +102,50 @@ public class StepDetailFragment extends Fragment {
                     stepDetailsFragment_new.setReciepeStepList(mStepList);
                     stepDetailsFragment_new.setReciepeStepListIndex(mReciepeStepClassListIndex);
 
+                    FrameLayout fmly = (FrameLayout)rootView.findViewById(R.id.step_detail_container);
+
                     FragmentManager activity_fm = ((ReciepeDetailActivity) getContext()).getSupportFragmentManager();
 
-                    activity_fm.beginTransaction()
-                            .replace(R.id.reciepe_detail_container, stepDetailsFragment_new)
-                            .addToBackStack("stepDetailsFragment")
-                            .commit();
+                    if (mTwoPaneMode || fmly!=null){
+                        stepDetailsFragment_new.setTwoPaneMode(mTwoPaneMode);
+                        activity_fm.beginTransaction()
+                                .replace(R.id.step_detail_container, stepDetailsFragment_new)
+                                .addToBackStack("stepDetailsFragment2")
+                                .commit();
+                    }else{
+                        activity_fm.beginTransaction()
+                                .replace(R.id.reciepe_detail_container, stepDetailsFragment_new)
+                                .addToBackStack("stepDetailsFragment")
+                                .commit();
+                    }
                 }
             });
+        if (savedInstanceState != null){
+            mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
+            if (!isPortrait && !mTwoPaneMode){
+                txtStepDetails.setVisibility(View.INVISIBLE);
+                btn_nextstep.setVisibility(View.INVISIBLE);
+                //FrameLayout.LayoutParams ly = new FrameLayout.LayoutParams(View.)
+                //flayout.setLayoutParams();
+
+                FrameLayout frameLayout = (FrameLayout)rootView.findViewById(R.id.frame_video_player);
+
+                //FrameLayout.LayoutParams  params = frameLayout.getLayoutParams();
+                //ToDo: Maximise playerView Here
+            }else{
+                txtStepDetails.setVisibility(View.VISIBLE);
+                btn_nextstep.setVisibility(View.VISIBLE);
+            }
+        }else{
+            txtStepDetails.setVisibility(View.VISIBLE);
+            btn_nextstep.setVisibility(View.VISIBLE);
+            if (mReciepeStepClassListIndex + 1 < mStepList.size()) {
+                mReciepeStepClassListIndex += 1;
+            } else {
+                mReciepeStepClassListIndex = 0;
+            }
+        }
 
         return rootView;
 
@@ -137,6 +158,9 @@ public class StepDetailFragment extends Fragment {
     }
     public void setReciepeStepListIndex(int ReciepeStepClassListIndex) {
         mReciepeStepClassListIndex = ReciepeStepClassListIndex;
+    }
+    public void setTwoPaneMode (boolean twoPaneMode){
+        mTwoPaneMode=twoPaneMode;
     }
     private void initializePlayer() {
         player = ExoPlayerFactory.newSimpleInstance(

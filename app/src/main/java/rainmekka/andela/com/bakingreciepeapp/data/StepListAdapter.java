@@ -27,6 +27,7 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
     private Reciepe mReciepes;
     private ArrayList<Step> mSteps;
     private Context mContext;
+    boolean mTwoPaneMode;
 
     public StepListAdapter(Reciepe reciepes, Context context) {
 
@@ -49,7 +50,7 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
     @Override
     public void onBindViewHolder(StepListAdapter.ViewHolder viewHolder, int i) {
 
-        viewHolder.txt_step_details.setText(mSteps.get(i).videoURL);
+        viewHolder.txt_step_details.setText(mSteps.get(i).shortDescription);
         if (!mSteps.get(i).thumbnailURL.equals("")){
             //useGlide to set Image Resource
             String imgUrlString =  mSteps.get(i).thumbnailURL;
@@ -73,10 +74,20 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
 
                 FragmentManager activity_fm = ((ReciepeDetailActivity)mContext).getSupportFragmentManager();
 
-                activity_fm.beginTransaction()
-                        .replace(R.id.reciepe_detail_container, stepDetailFragment)
-                        .addToBackStack("stepDetailsFragment")
-                        .commit();
+                if (mTwoPaneMode){
+                    stepDetailFragment.setTwoPaneMode(mTwoPaneMode);
+                    activity_fm.beginTransaction()
+                            .replace(R.id.step_detail_container, stepDetailFragment)
+                            .addToBackStack("stepDetailsFragment_ok")
+                            .commit();
+                }else{
+                    activity_fm.beginTransaction()
+                            .replace(R.id.reciepe_detail_container, stepDetailFragment)
+                            .addToBackStack("stepDetailsFragment")
+                            .commit();
+                }
+
+
             }
         });
 
@@ -94,6 +105,10 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.ViewHo
             txt_step_details = (TextView)view.findViewById(R.id.txt_step_details);
             img_stepImg = (ImageView) view.findViewById(R.id.img_stepImg);
         }
+    }
+
+    public void setTwoPaneMode(Boolean twopanemode){
+        mTwoPaneMode = twopanemode;
     }
 
 }
