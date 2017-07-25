@@ -8,17 +8,17 @@
         android:orientation="vertical"
         android:id="@+id/fragment_step_details_container">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/frame_video_player">
+        <!--<FrameLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:id="@+id/frame_video_player">-->
 
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        </FrameLayout>
+            android:layout_height="200dp"/>
+        <!--</FrameLayout>-->
 
     <TextView
         android:layout_width="match_parent"

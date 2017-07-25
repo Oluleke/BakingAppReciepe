@@ -13,8 +13,10 @@ public class NoConnectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection_error);
 
+        String strtext = getIntent().getStringExtra(ReciepeListActivity.ERROR_MESSAGE_TEXT);
+
         TextView txtNoConnection = (TextView) findViewById(R.id.txt_no_connection);
 
-        txtNoConnection.setText(getString(R.string.no_connection_message));
+        txtNoConnection.setText(strtext);
     }
 }

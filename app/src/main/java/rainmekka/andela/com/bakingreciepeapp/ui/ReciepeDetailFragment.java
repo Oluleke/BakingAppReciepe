@@ -1,10 +1,9 @@
 package rainmekka.andela.com.bakingreciepeapp.ui;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+
 
 import java.util.ArrayList;
 
@@ -33,7 +32,6 @@ public class ReciepeDetailFragment extends Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
     public static final String RECIEPE_ITEM = "reciepe_item";
     public static final String STEP_LIST = "step_list_item";
     public static final String TAG = "RecipeDetailFragment";
@@ -60,18 +58,13 @@ public class ReciepeDetailFragment extends Fragment {
         if (savedInstanceState!=null){
             mItem = savedInstanceState.getParcelable(STEP_LIST);
         }
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.reciepe_detail, container, false);
-        // Show the dummy content as text in a TextView.
-
         if (mItem != null ) {
-            //((TextView) rootView.findViewById(R.id.reciepe_detail)).setText(mItem.name);
             Button btn_showIngredients = (Button) rootView.findViewById(R.id.btn_showIngredients);
 
             btn_showIngredients.setText("Ingredients");
@@ -93,7 +86,7 @@ public class ReciepeDetailFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView)rootView.findViewById
                     (R.id.step_list_recyclerview);
 
-            //populating the steps
+
             StepListAdapter adapter = new StepListAdapter(mItem,getContext());
             adapter.setTwoPaneMode(mTwoPaneMode);
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
@@ -121,5 +114,10 @@ public class ReciepeDetailFragment extends Fragment {
         savedInstanceState.putParcelable(STEP_LIST,mItem);
 
     }
+//    @Override
+//    protected Parcelable onSaveInstanceState(){
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(SAVED_LAYOUT_MANAGER,);
+//    }
 
 }

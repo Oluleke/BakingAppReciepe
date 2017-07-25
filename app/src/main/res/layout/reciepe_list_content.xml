@@ -8,9 +8,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="15dp">
+    <ImageView
+        android:id="@+id/content_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp" />
     <TextView
         android:id="@+id/content"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25sp" />
 </android.support.v7.widget.CardView>

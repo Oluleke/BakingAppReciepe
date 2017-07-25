@@ -22,20 +22,7 @@
         android:orientation="vertical"
         android:padding="16dp"
         android:id="@+id/reciepe_detail_container">
-        <!--<Button-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_showIngredients"-->
-            <!--android:textSize="25sp"/>-->
-        <!--<FrameLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scrollbars="vertical">-->
-            <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/step_list_recyclerview"/>-->
-        <!--</FrameLayout>-->
+
 
     </LinearLayout>
 

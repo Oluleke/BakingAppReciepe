@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="rainmekka.andela.com.bakingreciepeapp">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -21,16 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       <activity
-        android:name=".ui.NoConnectionActivity"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme.NoActionBar">
-    </activity>
+        <activity
+            android:name=".ui.NoConnectionActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".ui.ReciepeIngredientsActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".ui.ReciepeDetailActivity"
             android:label="@string/title_reciepe_detail"
@@ -40,6 +39,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="rainmekka.andela.com.bakingreciepeapp.ui.ReciepeListActivity" />
         </activity>
+
+        <receiver android:name=".BakingTimeWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_time_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

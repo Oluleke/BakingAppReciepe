@@ -69,7 +69,12 @@ public class StepDetailFragment extends Fragment {
         Button btn_nextstep = (Button) rootView.findViewById(R.id.btn_next_step);
         playerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video_view);
 
-        FrameLayout flayout = (FrameLayout) rootView.findViewById(R.id.frame_video_player);
+        if (savedInstanceState != null) {
+            mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
+        }
+
+        //FrameLayout flayout = (FrameLayout) rootView.findViewById(R.id.frame_video_player);
 
         int curOrientation = getResources().getConfiguration().orientation;
         //int curOrientation;
@@ -121,19 +126,14 @@ public class StepDetailFragment extends Fragment {
                 }
             });
         if (savedInstanceState != null){
-            mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
-            mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
+            //mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            //mReciepeStepClassListIndex = savedInstanceState.getInt("stepIndex");
             if (!isPortrait && !mTwoPaneMode){
                 txtStepDetails.setVisibility(View.INVISIBLE);
                 btn_nextstep.setVisibility(View.INVISIBLE);
-                //FrameLayout.LayoutParams ly = new FrameLayout.LayoutParams(View.)
-                //flayout.setLayoutParams();
-
-                FrameLayout frameLayout = (FrameLayout)rootView.findViewById(R.id.frame_video_player);
-
-                //FrameLayout.LayoutParams  params = frameLayout.getLayoutParams();
                 //ToDo: Maximise playerView Here
             }else{
+                //return size to normal
                 txtStepDetails.setVisibility(View.VISIBLE);
                 btn_nextstep.setVisibility(View.VISIBLE);
             }
