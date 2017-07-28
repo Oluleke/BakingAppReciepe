@@ -34,7 +34,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import rainmekka.andela.com.bakingreciepeapp.CustomView.StatefulRecyclerView;
 import rainmekka.andela.com.bakingreciepeapp.R;
 import rainmekka.andela.com.bakingreciepeapp.data.Reciepe;
 import rainmekka.andela.com.bakingreciepeapp.rest.RequestInterface;

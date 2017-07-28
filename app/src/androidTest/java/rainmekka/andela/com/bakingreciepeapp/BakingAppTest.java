@@ -1,11 +1,13 @@
 package rainmekka.andela.com.bakingreciepeapp;
 
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import rainmekka.andela.com.bakingreciepeapp.ui.ReciepeListActivity;
@@ -18,6 +20,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
+import static rainmekka.andela.com.bakingreciepeapp.TestUtils.withRecyclerView;
 
 /**
  * Created by Oluleke on 7/24/2017.
@@ -30,23 +33,22 @@ public class BakingAppTest {
             = new ActivityTestRule<>(ReciepeListActivity.class);
 
     @Test
-    public void clickReciepeButton_openRecipeDetailsUi() throws Exception{
-        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.scrollToPosition(2));
+    public void confirmNumberOfreciepes_openRecipeDetailsUi() throws Exception{
+        //if this test passes,It means the test is wrong
+        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.scrollToPosition(20));
 
-        onView(withId(R.id.content))
-                .check(matches(withText("Yello cake")))
-                .check(matches((isDisplayed())));
-
-
-//        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(2,click()));
-//        onView(withId(R.id.reciepe_detail_container))
-//                .check(matches(isDisplayed()));
-
-//        onData(anything()).inAdapterView(withId(R.id.tea_grid_view)).atPosition(1).perform(click());
-//
-//        // Checks that the OrderActivity opens with the correct tea name displayed
-//        onView(withId(R.id.tea_name_text_view)).check(matches(withText(TEA_NAME)));
     }
 
+    @Test
+    public void clickReciepeButton_openRecipeDetailsUi() throws Exception{
+        //UI test to display list of ReciepeDetails Page for Item 2
+//
+//        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.scrollToPosition(1));
+//
+//        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
+        onView(withRecyclerView(R.id.reciepe_list).atPosition(0)).perform(click());
 
+        onView(withId(R.id.reciepe_detail_container))
+                .check(matches(isDisplayed()));
+    }
 }
