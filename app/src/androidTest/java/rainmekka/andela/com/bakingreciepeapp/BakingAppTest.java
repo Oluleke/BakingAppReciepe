@@ -4,7 +4,9 @@ import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -12,10 +14,12 @@ import org.junit.runner.RunWith;
 
 import rainmekka.andela.com.bakingreciepeapp.ui.ReciepeListActivity;
 
+import static android.R.attr.description;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -36,6 +40,7 @@ public class BakingAppTest {
     public void confirmNumberOfreciepes_openRecipeDetailsUi() throws Exception{
         //if this test passes,It means the test is wrong
         onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.scrollToPosition(20));
+        //RecyclerViewActions.
 
     }
 
@@ -43,12 +48,21 @@ public class BakingAppTest {
     public void clickReciepeButton_openRecipeDetailsUi() throws Exception{
         //UI test to display list of ReciepeDetails Page for Item 2
 //
-//        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.scrollToPosition(1));
+        //onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.scrollToPosition(1));
 //
-//        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
-        onView(withRecyclerView(R.id.reciepe_list).atPosition(0)).perform(click());
+//        onView(withId(R.id.reciepe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(4,click()));
+        onView(withId(R.id.reciepe_list))
+                .check(matches(hasDescendant(withText("Brownies"))));
 
-        onView(withId(R.id.reciepe_detail_container))
-                .check(matches(isDisplayed()));
+//        onView(withRecyclerView(R.id.reciepe_list)
+//                .atPositionOnView(1,R.id.content))
+//                .check(matches(withText("Brownies")));
+
+
+
+//        onView(withId(R.id.reciepe_detail_container))
+//                .check(matches(isDisplayed()));
     }
+
+
 }

@@ -28,22 +28,8 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!--<include layout="@layout/reciepe_list" />-->
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:baselineAligned="false"
-            android:divider="?android:attr/dividerHorizontal"
-            android:orientation="horizontal"
-            android:showDividers="middle"
-            android:padding="5dp"
-            tools:context="rainmekka.andela.com.bakingreciepeapp.ui.ReciepeListActivity">
 
-            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+        <android.support.v7.widget.RecyclerView
                 android:id="@+id/reciepe_list"
                 android:name="rainmekka.andela.com.bakingreciepeapp.ReciepeListFragment"
                 android:layout_width="match_parent"
@@ -59,7 +45,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3" />
 
-        </LinearLayout>
+
 
     </FrameLayout>
 

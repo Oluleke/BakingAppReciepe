@@ -92,6 +92,7 @@ public class ReciepeListActivity extends AppCompatActivity {
         loadJSON((RecyclerView) recyclerView);
     }
 
+
     public boolean getIsConnected() {
 
         ConnectivityManager cm =
